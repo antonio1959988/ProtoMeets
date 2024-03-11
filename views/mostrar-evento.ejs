@@ -1,0 +1,192 @@
+<div class="encabezado-evento">
+    <div class="contenedor">
+        <div class="resumen-evento">
+
+            <!-- <%= JSON.stringify(evento) %> -->
+            <h1>
+                <%= evento.titulo %>
+            </h1>
+
+            <div class="info-autor">
+                <div class="imagen">
+                    <% if(evento.usuario.imagen) {%>
+                        <img src="/uploads/perfiles/<%= evento.usuario.imagen %>" alt="">
+                        <% } else { %>
+                            <img src="/uploads/perfiles/user.jpeg" alt="" style="border-radius: 100%;">
+                            <% } %>
+                </div>
+                <div class="informacion">
+                    <p>Organizado por:</p>
+                    <p class="autor">
+                        <a href="/usuarios/<%= evento.usuario.id %>">
+                            <%= evento.usuario.nombre %>
+                        </a>, Creador de: <a href="/grupos/<%= evento.grupo.id %>">
+                            <%= evento.grupo.nombre %>
+                        </a>
+                    </p>
+                </div>
+            </div> <!-- Info autor -->
+        </div><!-- Resumen evento -->
+
+        <div class="pregunta-asistencia">
+            <% if(usuario.id) { %>
+                <% const existe=evento.interesados.includes(usuario.id) %>
+                    <form method="post" action="/confirmar-asistencia/<%= evento.slug %>" id="confirmar-asistencia"
+                        style="text-align: center;" class="confirm-asist">
+                        <p>¿Asistirás?</p>
+                        <% if(existe){ %>
+                            <input type="hidden" id="accion" value="cancelar">
+                            <input type="submit" class="btn btn-rojo" value="Cancelar">
+                            <% } else { %>
+                                <input type="hidden" id="accion" value="confirmar">
+                                <input type="submit" class="btn btn-azul" value="Si">
+                                <% } %>
+                                    <div id="mensaje" style="padding-top: 25px;"></div>
+                    </form>
+                    <% } else {%>
+                        <p>¿Deseas Asistir?</p>
+                        <a href="/iniciar-sesion" class="btn btn-azul">Inicia Sesión</a>
+                        <% } %>
+        </div>
+    </div>
+</div>
+
+<main class="contenido-evento">
+    <div class="contenedor">
+        <div class="informacion-evento">
+            <div class="descripcion">
+                <img src="/uploads/grupos/<%= evento.grupo.imagen %>" alt="">
+                <p><%- evento.descripcion %></p>
+            </div> <!-- Descripcion -->
+
+            <div class="asistentes">
+                <div class="titulo">
+                    <h3>
+                        <%= evento.interesados.length %> Asistentes
+                    </h3>
+                    <a href="/asistentes/<%= evento.slug %>">Ver Todos</a>
+                </div>
+            </div> <!-- Asistentes -->
+
+            <div class="comentarios">
+                <h2>Comentarios</h2>
+                <% if(comentarios.length> 0) { %>
+                    <% comentarios.forEach(comentario=> { %>
+                        <div class="comentario">
+                            <div class="imagen">
+                                <% if(comentario.usuario.imagen){ %>
+                                    <img src="/uploads/perfiles/<%= comentario.usuario.imagen %>" alt="">
+                                <% } %>
+                            </div>
+                            <div class="texto">
+                                <p><%= comentario.mensaje %></p>
+                                <p>Escrito por: 
+                                    <a href="/usuarios/<%= comentario.usuario.id %>">
+                                    <span>
+
+                                        <%= comentario.usuario.nombre %>
+                                
+                                </span>
+                            </a>
+                            </p>
+                            <% if(comentario.usuarioId === usuario.id || evento.usuarioId === usuario.id){ %>
+                                <form action="/eliminar-comentario" method="post" class="eliminar-comentario">
+                                    <input type="hidden" name="idComentario" value="<%= comentario.id %>">
+                                    <input type="submit" value="Eliminar" class="btn btn-azul">
+                                </form>
+                            <% } %>
+                            </div>
+                        </div>
+                        <% }) %>
+                            <% } else { %>
+                                <p>No hay comentarios aún</p>
+                                <% } %>
+
+                                    <!-- Formulario de comentarios -->
+                                    <% if(usuario.id){ %>
+                                        <form action="/evento/<%= evento.id %>" class="default-form comentarios"
+                                            method="post">
+                                            <legend>Agrega un comentario</legend>
+                                            <div class="campo">
+                                                <label>Comentario</label>
+                                                <textarea name="comentario"></textarea>
+                                            </div>
+                                            <div class="campo enviar">
+                                                <input type="submit" value="Enviar" class="btn btn-rosa">
+                                            </div>
+                                        </form>
+                                        <% } else { %>
+                                            <p>Inicia sesión para agregar un comentario</p>
+                                            <% } %>
+                                                <!-- formulario comentarios -->
+            </div> <!-- Comentarios -->
+        </div> <!-- Informacion evento -->
+
+        <aside class="informacion">
+            <div class="fecha">
+                <% moment.locale('es'); %>
+                    <% const fecha=evento.fecha + ' ' + evento.hora; %>
+                        <p>
+                            <%= moment(fecha).format('LLLL') %> horas
+                        </p>
+            </div>
+            <div class="ubicacion">
+                <p>
+                    <%= evento.direccion %>, <%= evento.ciudad %>, <%= evento.estado %>, <%= evento.pais %>
+                </p>
+            </div>
+
+            <!-- Mapa de ubicacion -->
+            <input type="hidden" id="lat" value="<%= evento.ubicacion.coordinates[0] %>">
+            <input type="hidden" id="lng" value="<%= evento.ubicacion.coordinates[1] %>">
+            <input type="hidden" id="direccion" value="<%= evento.direccion %>">
+            <div id="ubicacion-meeti" style="min-height: 300px;"></div>
+        </aside>
+    </div>
+</main>
+
+<h2>Otros Eventos Cercanos</h2>
+<div class="contenedor cercanos">
+    <% if(cercanos.length > 0) {%>
+        <% cercanos.forEach( evento => { %>
+            <div class="card">
+                <img src="/uploads/grupos/<%= evento.grupo.imagen %>">
+                <div class="card-texto">
+                    <% moment.locale('es') %>
+                        <% const fecha=evento.fecha +' '+ evento.hora %>
+                                <p class="fecha"><%= moment(fecha).format(' LLLL') %> horas</p>
+                            <a href="/evento/<%= evento.slug %>">
+                                <h3>
+                                    <%= evento.titulo %>
+                                </h3>
+                            </a>
+                            <div class="info-autor">
+                                <% if(evento.usuario.imagen) { %>
+                                    <div class="imagen">
+                                        <img src="/uploads/perfiles/<%= evento.usuario.imagen %>" alt=""
+                                            style="border-radius: 100%;">
+                                    </div>
+                                    <% } else { %>
+                                        <div class="imagen">
+                                            <img src="/uploads/perfiles/user.jpeg" alt="" style="border-radius: 100%;">
+                                        </div>
+                                        <% } %>
+                                            <div class="informacion">
+                                                <p>Organizado por:</p>
+                                                <p class="autor">
+                                                    <%= evento.usuario.nombre %>
+                                                </p>
+                                            </div>
+                            </div>
+                </div>
+            </div>
+        <% }) %>
+    <% } else { %>
+        <p>No hay eventos cercanos</p>
+    <% } %>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="/js/asistencia.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="/js/eliminarComentario.js" ></script>

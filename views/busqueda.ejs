@@ -1,0 +1,10 @@
+<div class="contenedor">
+    <h1><%= nombrePagina %></h1>
+    <% if(eventos.length > 0) { %>
+    <div class="grid columnas-md-3 ">
+            <%- include ('partials/card-evento.ejs') %>
+    </div> <!-- Grid -->
+    <% } else { %>
+        <p>No hay resultados</p>
+    <% } %>
+</div>
