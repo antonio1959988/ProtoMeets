@@ -77,26 +77,28 @@ exports.confirmarAsistencia = async (req, res) => {
 
     const { accion } = req.body
 
-    if(accion === 'confirmar') {
-        // Agregar el usuario
-        Eventos.update({
-            'interesados': Sequelize.fn('array_append', Sequelize.col('interesados'), req.user.id)},
-            {'where': {'slug': req.params.slug}}
-            
-            )
-
-         // Mensaje 
-        res.send('Has confirmado tu asistencia')
+    for(let i = 0; i < 1; i++){
+        if(accion === 'confirmar') {
+            // Agregar el usuario
+            Eventos.update({
+                'interesados': Sequelize.fn('array_append', Sequelize.col('interesados'), req.user.id)},
+                {'where': {'slug': req.params.slug}}
+                
+                )
     
-    } else {
-        // Cancelar la asistencia
-        Eventos.update({
-            'interesados': Sequelize.fn('array_remove', Sequelize.col('interesados'), req.user.id)},
-            {'where': {'slug': req.params.slug}}
-        )
-
-         // Mensaje 
-    res.send('Has cancelado tu asistencia')
+             // Mensaje 
+            res.send('Has confirmado tu asistencia')
+        
+        } else {
+            // Cancelar la asistencia
+            Eventos.update({
+                'interesados': Sequelize.fn('array_remove', Sequelize.col('interesados'), req.user.id)},
+                {'where': {'slug': req.params.slug}}
+            )
+    
+             // Mensaje 
+        res.send('Has cancelado tu asistencia')
+        }
     }
 
     return
