@@ -78,12 +78,12 @@ exports.confirmarAsistencia = async (req, res) => {
     const { accion } = req.body
 
     if(accion === 'confirmar') {
-        // Agregar el usuario solo si no está presente en el array de interesados
+        // Agregar el usuario
         Eventos.update({
-            'interesados': Sequelize.fn('array_distinct', Sequelize.fn('array_append', Sequelize.col('interesados'), req.user.id))
-        }, {
-            'where': { 'slug': req.params.slug }
-        });
+            'interesados': Sequelize.fn('array_append', Sequelize.col('interesados'), req.user.id)},
+            {'where': {'slug': req.params.slug}}
+            
+            )
 
          // Mensaje 
         res.send('Has confirmado tu asistencia')
