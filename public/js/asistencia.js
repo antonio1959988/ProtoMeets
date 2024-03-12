@@ -1,8 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const asistencias = document.querySelectorAll('#confirmar-asistencia');
-    asistencias.forEach(asistencia => {
+    const asistencia = document.querySelector('#confirmar-asistencia');
+    if(asistencia) {
         asistencia.addEventListener('submit', confirmarAsistencia);
-    });
+    }
 
 });
 
