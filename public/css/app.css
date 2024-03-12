@@ -34,6 +34,9 @@ a {
 img {
     max-width: 100%;
 }
+.img-card{
+    width: 100%;
+}
 ul {
     list-style: none;padding: 0;
 }

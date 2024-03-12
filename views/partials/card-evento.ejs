@@ -1,6 +1,6 @@
 <% eventos.forEach(evento=> { %>
     <div class="card">
-        <img src="/uploads/grupos/<%= evento.grupo.imagen %>">
+        <img src="/uploads/grupos/<%= evento.grupo.imagen %>" class="img-card">
         <div class="card-texto">
             <% moment.locale('es') %>
                 <% const fecha=evento.fecha +' '+ evento.hora %>
