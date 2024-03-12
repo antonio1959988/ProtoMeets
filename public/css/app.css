@@ -89,6 +89,8 @@ p {
 }
 .btn-amarillo {
     background-color: #FF8000;
+    max-height: 60px;
+    max-width: 80%;
 }
 .btn-rosa {
     background-color: #B8336A;
