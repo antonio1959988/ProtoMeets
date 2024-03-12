@@ -31,18 +31,13 @@
         <div class="pregunta-asistencia">
             <% if(usuario.id) { %>
                 <% const existe=evento.interesados.includes(usuario.id) %>
-                    <form method="post" action="/confirmar-asistencia/<%= evento.slug %>" id="confirmar-asistencia"
-                        style="text-align: center;" class="confirm-asist">
-                        <p>¿Asistirás?</p>
-                        <% if(existe){ %>
-                            <input type="hidden" id="accion" value="cancelar">
-                            <input type="submit" class="btn btn-rojo" value="Cancelar">
-                            <% } else { %>
-                                <input type="hidden" id="accion" value="confirmar">
-                                <input type="submit" class="btn btn-azul" value="Si">
-                                <% } %>
-                                    <div id="mensaje" style="padding-top: 25px;"></div>
-                    </form>
+                <form method="post" action="/confirmar-asistencia/<%= evento.slug %>" class="confirm-asist">
+                    <input type="hidden" name="accion" value="<%= existe ? 'cancelar' : 'confirmar' %>">
+                    <button type="submit" class="btn <%= existe ? 'btn-rojo' : 'btn-azul' %>">
+                        <%= existe ? 'Cancelar' : 'Sí' %>
+                    </button>
+                    <div id="mensaje" style="padding-top: 25px;"></div>
+                </form>
                     <% } else {%>
                         <p>¿Deseas Asistir?</p>
                         <a href="/iniciar-sesion" class="btn btn-azul">Inicia Sesión</a>
