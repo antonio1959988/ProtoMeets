@@ -31,13 +31,18 @@
         <div class="pregunta-asistencia">
             <% if(usuario.id) { %>
                 <% const existe=evento.interesados.includes(usuario.id) %>
-                <form method="post" action="/confirmar-asistencia/<%= evento.slug %>" class="confirm-asist">
-                    <input type="hidden" name="accion" value="<%= existe ? 'cancelar' : 'confirmar' %>">
-                    <button type="submit" class="btn <%= existe ? 'btn-rojo' : 'btn-azul' %>">
-                        <%= existe ? 'Cancelar' : 'Sí' %>
-                    </button>
-                    <div id="mensaje" style="padding-top: 25px;"></div>
-                </form>
+                    <form method="post" action="/confirmar-asistencia/<%= evento.slug %>" id="confirmar-asistencia"
+                        style="text-align: center;" class="confirm-asist">
+                        <p>¿Asistirás?</p>
+                        <% if(existe){ %>
+                            <input type="hidden" id="accion" value="cancelar">
+                            <input type="submit" class="btn btn-rojo" value="Cancelar">
+                            <% } else { %>
+                                <input type="hidden" id="accion" value="confirmar">
+                                <input type="submit" class="btn btn-azul" value="Si">
+                                <% } %>
+                                    <div id="mensaje" style="padding-top: 25px;"></div>
+                    </form>
                     <% } else {%>
                         <p>¿Deseas Asistir?</p>
                         <a href="/iniciar-sesion" class="btn btn-azul">Inicia Sesión</a>
@@ -71,25 +76,27 @@
                             <div class="imagen">
                                 <% if(comentario.usuario.imagen){ %>
                                     <img src="/uploads/perfiles/<%= comentario.usuario.imagen %>" alt="">
-                                <% } %>
+                                    <% } %>
                             </div>
                             <div class="texto">
-                                <p><%= comentario.mensaje %></p>
-                                <p>Escrito por: 
+                                <p>
+                                    <%= comentario.mensaje %>
+                                </p>
+                                <p>Escrito por:
                                     <a href="/usuarios/<%= comentario.usuario.id %>">
-                                    <span>
+                                        <span>
 
-                                        <%= comentario.usuario.nombre %>
-                                
-                                </span>
-                            </a>
-                            </p>
-                            <% if(comentario.usuarioId === usuario.id || evento.usuarioId === usuario.id){ %>
-                                <form action="/eliminar-comentario" method="post" class="eliminar-comentario">
-                                    <input type="hidden" name="idComentario" value="<%= comentario.id %>">
-                                    <input type="submit" value="Eliminar" class="btn btn-azul">
-                                </form>
-                            <% } %>
+                                            <%= comentario.usuario.nombre %>
+
+                                        </span>
+                                    </a>
+                                </p>
+                                <% if(comentario.usuarioId===usuario.id || evento.usuarioId===usuario.id){ %>
+                                    <form action="/eliminar-comentario" method="post" class="eliminar-comentario">
+                                        <input type="hidden" name="idComentario" value="<%= comentario.id %>">
+                                        <input type="submit" value="Eliminar" class="btn btn-azul">
+                                    </form>
+                                    <% } %>
                             </div>
                         </div>
                         <% }) %>
@@ -142,8 +149,8 @@
 
 <h2>Otros Eventos Cercanos</h2>
 <div class="contenedor cercanos">
-    <% if(cercanos.length > 0) {%>
-        <% cercanos.forEach( evento => { %>
+    <% if(cercanos.length> 0) {%>
+        <% cercanos.forEach( evento=> { %>
             <div class="card">
                 <img src="/uploads/grupos/<%= evento.grupo.imagen %>">
                 <div class="card-texto">
@@ -175,13 +182,13 @@
                             </div>
                 </div>
             </div>
-        <% }) %>
-    <% } else { %>
-        <p>No hay eventos cercanos</p>
-    <% } %>
+            <% }) %>
+                <% } else { %>
+                    <p>No hay eventos cercanos</p>
+                    <% } %>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script src="/js/asistencia.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<script src="/js/eliminarComentario.js" ></script>
+<script src="/js/eliminarComentario.js"></script>

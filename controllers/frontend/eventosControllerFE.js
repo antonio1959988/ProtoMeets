@@ -70,33 +70,37 @@ exports.mostrarEvento = async (req, res, next) => {
     })
 }
 
-// Confirma o cancela si el usuario asistirá al evento
+// Confirma o cancela si el usuario asistira al evento
 exports.confirmarAsistencia = async (req, res) => {
-    const { accion } = req.body;
 
-    try {
-        let mensaje = '';
+    console.log(req.body)
 
-        if (accion === 'confirmar') {
-            await Eventos.update(
-                { 'interesados': Sequelize.fn('array_append', Sequelize.col('interesados'), req.user.id) },
-                { 'where': { 'slug': req.params.slug } }
-            );
-            mensaje = 'Has confirmado tu asistencia';
-        } else {
-            await Eventos.update(
-                { 'interesados': Sequelize.fn('array_remove', Sequelize.col('interesados'), req.user.id) },
-                { 'where': { 'slug': req.params.slug } }
-            );
-            mensaje = 'Has cancelado tu asistencia';
-        }
+    const { accion } = req.body
 
-        res.send(mensaje);
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).send('Error al procesar la solicitud');
+    if(accion === 'confirmar') {
+        // Agregar el usuario
+        Eventos.update({
+            'interesados': Sequelize.fn('array_append', Sequelize.col('interesados'), req.user.id)},
+            {'where': {'slug': req.params.slug}}
+            
+            )
+
+         // Mensaje 
+        res.send('Has confirmado tu asistencia')
+    
+    } else {
+        // Cancelar la asistencia
+        Eventos.update({
+            'interesados': Sequelize.fn('array_remove', Sequelize.col('interesados'), req.user.id)},
+            {'where': {'slug': req.params.slug}}
+        )
+
+         // Mensaje 
+    res.send('Has cancelado tu asistencia')
     }
-};
+
+    return
+}
 
 // Muestra el listado de asistentes
 exports.mostrarAsistentes = async (req, res) => {
