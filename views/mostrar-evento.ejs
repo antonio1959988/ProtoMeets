@@ -31,7 +31,7 @@
         <div class="pregunta-asistencia">
             <% if(usuario.id) { %>
                 <% const existe=evento.interesados.includes(usuario.id) %>
-                    <form method="post" action="/confirmar-asistencia/<%= evento.slug %>" id="confirmar-asistencia"
+                    <form action="/confirmar-asistencia/<%= evento.slug %>" id="confirmar-asistencia"
                         style="text-align: center;" class="confirm-asist">
                         <p>¿Asistirás?</p>
                         <% if(existe){ %>
